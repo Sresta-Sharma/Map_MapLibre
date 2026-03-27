@@ -16,8 +16,9 @@ const MapBasic = () => {
       zoom: 10,
     });
 
-    // Zoom + Rotation controls
+    // Zoom, Rotation & FullScreen controls
     mapRef.current.addControl(new maplibregl.NavigationControl(), "top-right");
+    mapRef.current.addControl(new maplibregl.FullscreenControl(), "top-right");
 
   }, []);
 
