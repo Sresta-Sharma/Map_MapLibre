@@ -8,30 +8,29 @@ export const addGeometries = async (map: maplibregl.Map) => {
   addInteractions(map);
 };
 
+const popup = new maplibregl.Popup({
+  closeButton: true,
+  closeOnClick: false,
+});
+
 // Point
 const addPoint = async (map: maplibregl.Map) => {
-  map.addSource("point", {
-    type: "geojson",
-    data: {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [85.3117, 27.7006],
-      },
-      properties: { name: "Dharahara" },
-    },
-  });
+  const coordinates: [number, number] = [85.3117, 27.7006];
 
-  map.addLayer({
-    id: "point-layer",
-    type: "circle",
-    source: "point",
-    paint: {
-      "circle-radius": 10,
-      "circle-color": "#e63946",
-      "circle-stroke-width": 2,
-      "circle-stroke-color": "#ffffff",
-    },
+  const marker = new maplibregl.Marker({ color: "#e63946" })
+    .setLngLat(coordinates)
+    .addTo(map);
+
+  const el = marker.getElement();
+
+  el.style.cursor = "pointer";
+
+  el.addEventListener("click", () => {
+    popup
+      .setLngLat(coordinates)
+      .setOffset([0, -30])
+      .setHTML("<strong>Dharahara</strong>")
+      .addTo(map);
   });
 };
 
@@ -94,18 +93,26 @@ const fetchGeoJSON = async (url: string) => {
 // Interactions
 const addInteractions = (map: maplibregl.Map) => {
   
-  const interactiveLayers = ["point-layer", "route-layer", "kathmandu-fill"];
+  const interactiveLayers = ["route-layer", "kathmandu-fill"];
 
   // Click Popup
   map.on("click", (e) => {
+    const target = e.originalEvent.target as HTMLElement;
+
+    if (target.closest(".maplibregl-marker")) {
+      return; // ignore marker click
+    }
+    
     const features = map.queryRenderedFeatures(e.point, {
       layers: interactiveLayers,
     });
 
-    if (!features.length) return;
+    if (!features.length) {
+      popup.remove(); // close popup
+      return;
+    }
 
     const feature =
-      features.find((f) => f.layer.id === "point-layer") ||
       features.find((f) => f.layer.id === "route-layer") ||
       features.find((f) => f.layer.id === "kathmandu-fill");
 
@@ -113,7 +120,7 @@ const addInteractions = (map: maplibregl.Map) => {
 
     const name = feature.properties?.name;
 
-    new maplibregl.Popup()
+    popup
       .setLngLat(e.lngLat)
       .setHTML(`<strong>${name}</strong>`)
       .addTo(map);
