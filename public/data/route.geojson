@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Boudha → Baneshwor → Patan Route"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [85.3616, 27.7215],
+          [85.3550, 27.7150],
+          [85.3450, 27.7100],
+          [85.3350, 27.7050],
+          [85.3300, 27.7000],
+          [85.3280, 27.6950],
+          [85.3260, 27.6900],
+          [85.3250, 27.6850],
+          [85.3240, 27.6731]
+        ]
+      }
+    }
+  ]
+}
