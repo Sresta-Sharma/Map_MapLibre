@@ -4,6 +4,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 const MapBasic = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
 
   const mapStyles = {
@@ -23,7 +24,11 @@ const MapBasic = () => {
 
     // Zoom, Rotation & FullScreen controls
     mapRef.current.addControl(new maplibregl.NavigationControl(), "top-right");
-    mapRef.current.addControl(new maplibregl.FullscreenControl(), "top-right");
+    mapRef.current.addControl(
+      new maplibregl.FullscreenControl({
+        container: wrapperRef.current!, 
+      }), 
+      "top-right");
   }, []);
 
   const changeBasemap = (styleKey: keyof typeof mapStyles) => {
@@ -31,7 +36,7 @@ const MapBasic = () => {
   };
 
   return (
-    <div className="relative h-screen w-screen">
+    <div ref={wrapperRef} className="relative h-screen w-screen">
       
         {/* Map */}
         <div ref={mapContainer} className="h-full w-full" />
